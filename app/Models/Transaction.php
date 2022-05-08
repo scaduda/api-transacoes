@@ -6,32 +6,26 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Model
+class Transaction extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
-    protected $table = 'usuarios';
+    protected $table = 'transacoes';
     protected $visible = [
         'id',
-        'name',
-        'fantasy_name',
         'type',
-        'register',
-        'email',
-        'password',
-        'balance',
+        'payer_id',
+        'payee_id',
+        'value',
+        'comment',
         'created_at',
     ];
     protected $fillable = [
-        'name',
-        'fantasy_name',
         'type',
-        'register',
-        'email',
-        'password',
-        'balance',
-        'saldo',
+        'payer_id',
+        'payee_id',
+        'value',
+        'comment',
     ];
-
 }
