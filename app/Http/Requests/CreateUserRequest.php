@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\FullName;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateUserRequest extends FormRequest
@@ -25,23 +24,13 @@ class CreateUserRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required|string|max:255', new FullName],
+            'name' => 'required|string|max:255',
             'fantasy_name' => 'nullable|string|max:255',
             'type' => 'required|numeric|between:1,2',
-            'register' => 'required|string|unique:usuarios,cadastro',
-            'email' => 'required|string|unique:usuarios,email',
+            'register' => 'required|string|min:11',
+            'email' => 'required|string',
             'password' => 'required|string|min:6',
-        ];
-    }
-
-    public function messages()
-    {
-        return [
-            'name.required' => 'O campo nome é obrigatório',
-            'type.required' => 'O campo tipo é obrigatório',
-            'register.required' => 'O campo CPF/CNPJ é obrigatório',
-            'email.required' => 'O campo email é obrigatório',
-            'password.required' => 'O campo senha é obrigatório',
+            'balance' => 'required|numeric',
         ];
     }
 }

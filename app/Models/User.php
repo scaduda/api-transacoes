@@ -2,16 +2,21 @@
 
 namespace App\Models;
 
+use App\Enums\TypeUserEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+
+/**
+ * @property float $balance
+ */
 
 class User extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
-    protected $table = 'usuarios';
+    protected $table = 'users';
     protected $visible = [
         'id',
         'name',
@@ -33,5 +38,10 @@ class User extends Model
         'balance',
         'saldo',
     ];
+
+    protected $casts = [
+        'type' => TypeUserEnum::class
+    ];
+
 
 }
