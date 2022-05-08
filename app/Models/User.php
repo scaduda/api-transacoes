@@ -2,43 +2,46 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\TypeUserEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class User extends Authenticatable
+/**
+ * @property float $balance
+ */
+
+class User extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory;
+    use SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
+    protected $table = 'users';
+    protected $visible = [
+        'id',
         'name',
+        'fantasy_name',
+        'type',
+        'register',
         'email',
         'password',
+        'balance',
+        'created_at',
     ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
+    protected $fillable = [
+        'name',
+        'fantasy_name',
+        'type',
+        'register',
+        'email',
         'password',
-        'remember_token',
+        'balance',
+        'saldo',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'type' => TypeUserEnum::class
     ];
+
+
 }
