@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property float $balance
+ * @property TypeUserEnum $type
  */
 
 class User extends Model

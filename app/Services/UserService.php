@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\DTO\UserDTO;
+use App\Enums\TypeUserEnum;
 use App\Models\User;
 use App\Repositories\Interfaces\IUserRepository;
+use Exception;
 
 class UserService
 {
@@ -14,52 +16,84 @@ class UserService
     {
     }
 
-    public function createUser(UserDTO $user)
+    /**
+     * @throws Exception
+     */
+    public function createUser(UserDTO $user): bool
     {
-        $userExists = $this->checkOfExists($user->register, $user->email);
-        //TODO: RETIRAR ISSO DEPOIS DE TRATAR OS ERROS
-        if ($userExists) {
-            return ['Esse usuário já existe'];
-        }
-
-        $name = $this->validateFullName($user->name);
-        if (!$name) {
-            return ['Nome incompleto'];
-        }
+        $this->checkOfExists($user->register, $user->email);
+        $this->validateFullName($user->name);
 
         return $this->userRepository->addUser(
             new User($user->toArray())
         );
     }
 
-    private function validateFullName(string $name): bool
+    /**
+     * @throws Exception
+     */
+    private function validateFullName(string $name): void
     {
         //TODO: TROCAR ISSO DEPOIS DE TRATAR OS ERROS
-        return str_word_count($name) > 1;
+        if (!(str_word_count($name) > 1)) {
+            throw new Exception();
+        }
     }
 
-    private function checkOfExists(string $register, string $email): bool
+    /**
+     * @throws Exception
+     */
+    private function checkOfExists(string $register, string $email): void
     {
         $user = $this->userRepository->findUserByRegisterAndEmail($register, $email);
 
         if ($user) {
             //TODO: TROCAR ISSO DEPOIS DE TRATAR OS ERROS
-            return true;
+            throw new Exception();
         }
-        return false;
     }
 
-    private function checkOfExistsById(int $id): User|null
+    /**
+     * @throws Exception
+     */
+    private function checkOfExistsById(int $id): User
     {
         $user = $this->userRepository->findUser($id);
 
-        if (!$user) {
+        if (empty($user)) {
             //TODO: TROCAR ISSO DEPOIS DE TRATAR OS ERROS
-            return null;
+            throw new Exception();
         }
         return $user;
     }
 
+    /**
+     * @throws Exception
+     */
+    public function validateUsers(int $payer_id, int $payee)
+    {
+        $payer = $this->userRepository->findUser($payer_id);
+        if(empty($payer)) {
+            //TODO: TROCAR ISSO DEPOIS DE TRATAR OS ERROS
+            throw new Exception();
+        }
+
+        $payee = $this->userRepository->findUser($payer_id);
+        if(empty($payee)) {
+            //TODO: TROCAR ISSO DEPOIS DE TRATAR OS ERROS
+            throw new Exception();
+        }
+
+        if ($payer->type == TypeUserEnum::PessoaJuridica) {
+            //TODO: TROCAR ISSO DEPOIS DE TRATAR OS ERROS PESSOA JURÍDICA SÓ RECEBE
+            throw new Exception();
+        }
+    }
+
+
+    /**
+     * @throws Exception
+     */
     public function checkBalance(int $id): float
     {
         $userExists = $this->checkOfExistsById($id);
@@ -67,6 +101,9 @@ class UserService
     }
 
 
+    /**
+     * @throws Exception
+     */
     public function updateBalance(int $id, float $value): bool
     {
         $balance = $this->checkBalance($id);
