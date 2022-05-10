@@ -3,10 +3,10 @@
 namespace App\Repositories\Database;
 
 use App\Entities\User;
-use App\Enums\TypeUserEnum;
 use \App\Models\User as UserModel;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\ValuesObjects\Email;
+use App\ValuesObjects\Name;
 use App\ValuesObjects\Register;
 
 class UserRepository implements UserRepositoryInterface
@@ -14,28 +14,48 @@ class UserRepository implements UserRepositoryInterface
 
     public function addUser(User $user): bool
     {
-        return $user->save();
+        $userModel = new UserModel([
+                "name" => new Name($user->name),
+                "type" => $user->type,
+                "register" => new Register($user->register),
+                "email" => new Email($user->email),
+                "password" => $user->password,
+                "balance" => $user->balance,
+                "fantasy_name" => $user->fantasy_name,
+        ]);
+        return $userModel->save();
     }
 
     public function findUser(int $id): User
     {
         $userBanco = UserModel::find($id);
+        return $this->returnEntity($userBanco);
+    }
+
+    private function returnEntity(UserModel $user): User
+    {
         return new User(
-            $userBanco->name,
-            $userBanco->type,
-            new Register($userBanco->register),
-            new Email($userBanco->email),
-            $userBanco->password,
-            $userBanco->balance,
-            $userBanco->fantasy_name,
+            new Name($user->name),
+            $user->type,
+            new Register($user->register),
+            new Email($user->email),
+            $user->password,
+            $user->balance,
+            $user->fantasy_name,
         );
     }
 
-    public function findUserByRegisterAndEmail(string $register, string $email): User|null
+    public function findUserByRegisterAndEmail(string $register, string $email): ?User
     {
-        return User::where('register', $register)
+        $userModel = UserModel::where('register', $register)
             ->orWhere('email', $email)
             ->first();
+
+        if ($userModel) {
+            return $this->returnEntity($userModel);
+        }
+
+       return null;
     }
 
     public function updateBalance(int $id, float $value): bool

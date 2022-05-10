@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\DTO\TransactionDTO;
 use App\Entities\Transaction;
+use App\Entities\User;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
 use App\Utils\Exceptions\TransactionException;
 use Exception;
@@ -35,7 +36,7 @@ class TransactionService
                 $transaction->value,
             );
 
-            $this->validateTransaction($transaction);
+            $this->validateTransaction($this->transaction);
             $this->authorize();
             $this->debit();
             $this->addTransaction();
@@ -62,7 +63,7 @@ class TransactionService
 
     }
 
-    private function validatePayer($payer, $transaction): void
+    private function validatePayer(User $payer, TransactionDTO $transaction): void
     {
         if (!$payer->isPayer()) {
             throw new \DomainException('Só Pessoas Físicas podem realizar transferências');
@@ -74,7 +75,7 @@ class TransactionService
 
     }
 
-    private function validateTransaction($transactionEntity)
+    private function validateTransaction(Transaction $transactionEntity)
     {
         if ($transactionEntity->areEqual()) {
             throw new \DomainException('Pagador e receptor não podem ser iguais');
@@ -95,6 +96,9 @@ class TransactionService
         $this->transactionRepository->addTransaction($this->transaction);
     }
 
+    /**
+     * @throws Exception
+     */
     private function credit()
     {
         $this->userService->credit($this->transaction->payee, $this->transaction->value);
