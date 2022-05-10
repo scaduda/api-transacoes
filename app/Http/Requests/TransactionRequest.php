@@ -27,7 +27,6 @@ class TransactionRequest extends FormRequest
             'payer' => 'required|numeric',
             'payee' => 'required|numeric',
             'value' => 'required|numeric',
-            'comment' => 'nullable|string',
         ];
     }
 }

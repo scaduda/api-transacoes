@@ -3,15 +3,14 @@
 namespace App\Services;
 
 use App\DTO\UserDTO;
-use App\Enums\TypeUserEnum;
-use App\Models\User;
-use App\Repositories\Interfaces\IUserRepository;
+use App\Entities\User;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 use Exception;
 
 class UserService
 {
     public function __construct(
-        private IUserRepository $userRepository
+        private UserRepositoryInterface $userRepository
     )
     {
     }
@@ -53,60 +52,31 @@ class UserService
         }
     }
 
-    /**
-     * @throws Exception
-     */
-    private function checkOfExistsById(int $id): User
+    public function debit(User $payer, float $value)
     {
-        $user = $this->userRepository->findUser($id);
-
-        if (empty($user)) {
-            //TODO: TROCAR ISSO DEPOIS DE TRATAR OS ERROS
-            throw new Exception();
+        $algumacoisa = true;
+        if ($algumacoisa != true) {
+            throw new \DomainException('hj n');
         }
-        return $user;
     }
 
-    /**
-     * @throws Exception
-     */
-    public function validateUsers(int $payer_id, int $payee)
+    public function credit(User $payee, float $value)
     {
-        $payer = $this->userRepository->findUser($payer_id);
-        if(empty($payer)) {
-            //TODO: TROCAR ISSO DEPOIS DE TRATAR OS ERROS
-            throw new Exception();
-        }
+    }
 
-        $payee = $this->userRepository->findUser($payer_id);
-        if(empty($payee)) {
-            //TODO: TROCAR ISSO DEPOIS DE TRATAR OS ERROS
-            throw new Exception();
-        }
-
-        if ($payer->type == TypeUserEnum::PessoaJuridica) {
-            //TODO: TROCAR ISSO DEPOIS DE TRATAR OS ERROS PESSOA JURÍDICA SÓ RECEBE
-            throw new Exception();
-        }
+    public function find(int $id): User
+    {
+        return $this->userRepository->findUser($id) ?? throw new \DomainException('Usuário nãp encontrado');
     }
 
 
     /**
      * @throws Exception
      */
-    public function checkBalance(int $id): float
+    private function updateBalance(int $id, float $value): bool
     {
-        $userExists = $this->checkOfExistsById($id);
-        return $userExists->balance;
-    }
-
-
-    /**
-     * @throws Exception
-     */
-    public function updateBalance(int $id, float $value): bool
-    {
-        $balance = $this->checkBalance($id);
+        $user = $this->find($id);
+        $balance = $user->balance;
         $newBalance = $balance + $value;
         return $this->userRepository->updateBalance($id, $newBalance);
     }

@@ -37,7 +37,6 @@ class User extends Model
         'email',
         'password',
         'balance',
-        'saldo',
     ];
 
     protected $casts = [

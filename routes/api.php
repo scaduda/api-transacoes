@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,7 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('v1/')->group(function () {
-    Route::prefix('users')->group(function () {
-        Route::post('', [UserController::class, 'createUser']);
-    });
+    Route::post('users', [UserController::class, 'createUser']);
+    Route::post('transactions', [TransactionController::class, 'makeTransaction']);
 });

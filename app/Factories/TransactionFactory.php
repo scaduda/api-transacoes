@@ -15,7 +15,6 @@ class TransactionFactory
             payer_id: self::getInt($data, 'payer'),
             payee_id: self::getInt($data, 'payee'),
             value: self::getInt($data, 'value'),
-            comment: self::getString($data, 'comment'),
         );
     }
 }

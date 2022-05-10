@@ -10,7 +10,6 @@ class TransactionDTO
         public readonly int $payer_id,
         public readonly int $payee_id,
         public readonly float $value,
-        public readonly ?string $comment,
     )
     {
     }
@@ -21,7 +20,6 @@ class TransactionDTO
             'payer_id' => $this->payer_id,
             'payee_id' => $this->payee_id,
             'value' => $this->value,
-            'comment' => $this->comment,
         ];
     }
 

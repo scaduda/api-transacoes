@@ -6,12 +6,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property string $payer_id
+ * @property string $payee_id
+ * @property float $value
+ */
+
 class Transaction extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
-    protected $table = 'transacoes';
+    protected $table = 'transactions';
     protected $visible = [
         'id',
         'type',
