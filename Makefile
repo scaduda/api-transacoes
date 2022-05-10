@@ -1,6 +1,5 @@
 deploy_dev:
-	docker-compose up -d api-transacoes_dev
-	docker-compose up -d db
+	docker-compose up -d
 	make install
 
 install:

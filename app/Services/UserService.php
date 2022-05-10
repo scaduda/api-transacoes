@@ -5,6 +5,9 @@ namespace App\Services;
 use App\DTO\UserDTO;
 use App\Entities\User;
 use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\ValuesObjects\Email;
+use App\ValuesObjects\Name;
+use App\ValuesObjects\Register;
 use Exception;
 
 class UserService
@@ -21,22 +24,18 @@ class UserService
     public function createUser(UserDTO $user): bool
     {
         $this->checkOfExists($user->register, $user->email);
-        $this->validateFullName($user->name);
 
         return $this->userRepository->addUser(
-            new User($user->toArray())
+            new User(
+                new Name($user->name),
+                $user->type,
+                new Register($user->register),
+                new Email($user->email),
+                $user->password,
+                $user->balance,
+                $user->fantasy_name,
+            )
         );
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function validateFullName(string $name): void
-    {
-        //TODO: TROCAR ISSO DEPOIS DE TRATAR OS ERROS
-        if (!(str_word_count($name) > 1)) {
-            throw new Exception();
-        }
     }
 
     /**
@@ -47,21 +46,26 @@ class UserService
         $user = $this->userRepository->findUserByRegisterAndEmail($register, $email);
 
         if ($user) {
-            //TODO: TROCAR ISSO DEPOIS DE TRATAR OS ERROS
-            throw new Exception();
+            throw new \DomainException('Usuário já cadastrado');
         }
     }
 
-    public function debit(User $payer, float $value)
+    /**
+     * @throws Exception
+     */
+    public function debit(User $payer, float $value): bool
     {
-        $algumacoisa = true;
-        if ($algumacoisa != true) {
-            throw new \DomainException('hj n');
-        }
+        $newBalance = $payer->balance - $value;
+        return $this->updateBalance($payer, $newBalance);
     }
 
-    public function credit(User $payee, float $value)
+    /**
+     * @throws Exception
+     */
+    public function credit(User $payee, float $value): bool
     {
+        $newBalance = $payee->balance + $value;
+        return $this->updateBalance($payee, $newBalance);
     }
 
     public function find(int $id): User
@@ -73,11 +77,9 @@ class UserService
     /**
      * @throws Exception
      */
-    private function updateBalance(int $id, float $value): bool
+    private function updateBalance(User $user, float $value): bool
     {
-        $user = $this->find($id);
-        $balance = $user->balance;
-        $newBalance = $balance + $value;
-        return $this->userRepository->updateBalance($id, $newBalance);
+        $user_id =$this->userRepository->findId($user->register);
+        return $this->userRepository->updateBalance($user_id , $value);
     }
 }

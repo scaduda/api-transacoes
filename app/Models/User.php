@@ -8,8 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * @property float $balance
+ * @property string $name
  * @property TypeUserEnum $type
+ * @property string $register
+ * @property string $email
+ * @property string $password
+ * @property float $balance
+ * @property string $fantasy_name
+
  */
 
 class User extends Model

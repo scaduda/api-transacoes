@@ -4,9 +4,11 @@ namespace App\Services;
 
 use App\DTO\TransactionDTO;
 use App\Entities\Transaction;
+use App\Entities\User;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
-use App\Utils\Exceptions\TransactionException;
+use App\Utils\Exceptions\AuthorizationException;
 use Exception;
+use Illuminate\Support\Facades\Http;
 
 class TransactionService
 {
@@ -14,7 +16,9 @@ class TransactionService
 
     public function __construct(
         private TransactionRepositoryInterface $transactionRepository,
-        private UserService                    $userService
+        private UserService                    $userService,
+        private NotificationService $notificationService,
+        private AuthorizationService $autorizationService
     )
     {
     }
@@ -35,34 +39,34 @@ class TransactionService
                 $transaction->value,
             );
 
-            $this->validateTransaction($transaction);
+            $this->validateTransaction($this->transaction);
             $this->authorize();
             $this->debit();
             $this->addTransaction();
             $this->credit();
-            $this->notify($payee);
+            $this->notify($this->transaction);
             $this->transactionRepository->commitTransaction();
             return true;
-        } catch (Exception) {
+        } catch (Exception $erro) {
             $this->transactionRepository->rollbackTransaction();
-            throw new \DomainException('erro alguma coisa deu ruim');
+            throw $erro;
         }
     }
 
-    private function authorize()
+    private function authorize(): void
     {
-        $algumacoisa = true;
-        if ($algumacoisa != true) {
-            throw new \DomainException('hj n');
+        if ($this->autorizationService->authorize($this->transaction)) {
+            throw new AuthorizationException('Transação não autorizada');
         }
+
     }
 
-    private function notify()
+    private function notify(Transaction $transaction): void
     {
-
+        $this->notificationService->notify($transaction);
     }
 
-    private function validatePayer($payer, $transaction): void
+    private function validatePayer(User $payer, TransactionDTO $transaction): void
     {
         if (!$payer->isPayer()) {
             throw new \DomainException('Só Pessoas Físicas podem realizar transferências');
@@ -71,10 +75,9 @@ class TransactionService
         if (!$payer->checkBalance($transaction->value)) {
             throw new \DomainException('Saldo insuficiente');
         }
-
     }
 
-    private function validateTransaction($transactionEntity)
+    private function validateTransaction(Transaction $transactionEntity)
     {
         if ($transactionEntity->areEqual()) {
             throw new \DomainException('Pagador e receptor não podem ser iguais');
@@ -95,6 +98,9 @@ class TransactionService
         $this->transactionRepository->addTransaction($this->transaction);
     }
 
+    /**
+     * @throws Exception
+     */
     private function credit()
     {
         $this->userService->credit($this->transaction->payee, $this->transaction->value);
