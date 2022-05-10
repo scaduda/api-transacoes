@@ -32,7 +32,7 @@ class UserRepository implements UserRepositoryInterface
         return $this->returnEntity($userBanco);
     }
 
-    private function returnEntity(UserModel $user): User
+    private function returnEntity(UserModel $user): ?User
     {
         return new User(
             new Name($user->name),

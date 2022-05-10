@@ -5,7 +5,6 @@ namespace App\Services;
 use App\DTO\TransactionDTO;
 use App\Entities\Transaction;
 use App\Entities\User;
-use App\Repositories\Interfaces\AutorizationRepositoryInterface;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
 use App\Utils\Exceptions\AuthorizationException;
 use Exception;
@@ -48,16 +47,15 @@ class TransactionService
             $this->notify($this->transaction);
             $this->transactionRepository->commitTransaction();
             return true;
-        } catch (Exception) {
+        } catch (Exception $erro) {
             $this->transactionRepository->rollbackTransaction();
-            throw new \DomainException('erro alguma coisa deu ruim');
+            throw $erro;
         }
     }
 
     private function authorize(): void
     {
-        $authorization = $this->autorizationService->authorize($this->transaction);
-        if (!$authorization) {
+        if ($this->autorizationService->authorize($this->transaction)) {
             throw new AuthorizationException('Transação não autorizada');
         }
 

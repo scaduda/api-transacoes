@@ -14,7 +14,11 @@ class AuthorizationRepository implements AuthorizationRepositoryInterface
 
     public function authorize(Transaction $transaction): bool
     {
-        return true;
+        $response = Http::get(self::URL);
+        if ($response->ok() && $response['message'] === self::AUTORIZADO) {
+            return true;
+        }
+        return false;
     }
 
 

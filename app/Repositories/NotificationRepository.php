@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 class NotificationRepository implements NotificationRepositoryInterface
 {
     const URL = 'http://o4d9z.mocklab.io/notify';
+    const STATUS = 'Success';
 
     public function send(string $email, string $title, string $message): void
     {
@@ -43,16 +44,16 @@ class NotificationRepository implements NotificationRepositoryInterface
     {
         try {
             $response = Http::get(self::URL);
-            return $response->ok() && $response['message'] === "Success";
+            return $response->ok() && $response['message'] === self::STATUS;
         } catch (\Exception) {
             return false;
         }
     }
 
-    private function store(int $user_id, string $title, string $message, bool $send): void
+    private function store(string $email, string $title, string $message, bool $send): void
     {
         $notification = new Notification([
-            'user_id' => $user_id,
+            'email' => $email,
             'title' => $title,
             'message' => $message,
             'send' => $send

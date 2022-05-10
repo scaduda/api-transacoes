@@ -15,7 +15,7 @@ class Notification extends Model
     protected $table = 'notifications';
     protected $visible = [
         'id',
-        'user_id',
+        'email',
         'title',
         'message',
         'send',
@@ -23,7 +23,7 @@ class Notification extends Model
 
     ];
     protected $fillable = [
-        'user_id',
+        'email',
         'title',
         'message',
         'send',

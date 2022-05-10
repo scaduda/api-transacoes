@@ -15,8 +15,7 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onUpdate('RESTRICT')->onDelete('RESTRICT');
+            $table->string('email');
             $table->string('title');
             $table->string('message');
             $table->boolean('send');
