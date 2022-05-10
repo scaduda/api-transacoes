@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\AuthorizationRepository;
+use App\Repositories\Interfaces\AuthorizationRepositoryInterface;
 use App\Repositories\Interfaces\NotificationRepositoryInterface;
 use App\Repositories\NotificationRepository;
 use App\Repositories\TransactionRepository;
@@ -30,6 +32,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             NotificationRepositoryInterface::class,
             NotificationRepository::class
+        );
+        $this->app->bind(
+            AuthorizationRepositoryInterface::class,
+            AuthorizationRepository::class
         );
     }
 

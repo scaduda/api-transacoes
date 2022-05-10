@@ -5,8 +5,11 @@ namespace App\Services;
 use App\DTO\TransactionDTO;
 use App\Entities\Transaction;
 use App\Entities\User;
+use App\Repositories\Interfaces\AutorizationRepositoryInterface;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
+use App\Utils\Exceptions\AuthorizationException;
 use Exception;
+use Illuminate\Support\Facades\Http;
 
 class TransactionService
 {
@@ -15,7 +18,8 @@ class TransactionService
     public function __construct(
         private TransactionRepositoryInterface $transactionRepository,
         private UserService                    $userService,
-        private NotificationService $notificationService
+        private NotificationService $notificationService,
+        private AuthorizationService $autorizationService
     )
     {
     }
@@ -50,12 +54,13 @@ class TransactionService
         }
     }
 
-    private function authorize()
+    private function authorize(): void
     {
-        $algumacoisa = true;
-        if ($algumacoisa != true) {
-            throw new \DomainException('hj n');
+        $authorization = $this->autorizationService->authorize($this->transaction);
+        if (!$authorization) {
+            throw new AuthorizationException('Transação não autorizada');
         }
+
     }
 
     private function notify(Transaction $transaction): void

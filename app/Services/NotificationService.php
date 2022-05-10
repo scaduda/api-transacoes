@@ -5,7 +5,6 @@ namespace App\Services;
 
 use App\Entities\Transaction;
 use App\Repositories\Interfaces\NotificationRepositoryInterface;
-use App\Utils\Exceptions\NotificationException;
 
 class NotificationService
 {
