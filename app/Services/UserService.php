@@ -3,73 +3,80 @@
 namespace App\Services;
 
 use App\DTO\UserDTO;
-use App\Models\User;
-use App\Repositories\Interfaces\IUserRepository;
+use App\Entities\User;
+use App\Repositories\Interfaces\UserRepositoryInterface;
+use Exception;
 
 class UserService
 {
     public function __construct(
-        private IUserRepository $userRepository
+        private UserRepositoryInterface $userRepository
     )
     {
     }
 
-    public function createUser(UserDTO $user)
+    /**
+     * @throws Exception
+     */
+    public function createUser(UserDTO $user): bool
     {
-        $userExists = $this->checkOfExists($user->register, $user->email);
-        //TODO: RETIRAR ISSO DEPOIS DE TRATAR OS ERROS
-        if ($userExists) {
-            return ['Esse usuário já existe'];
-        }
-
-        $name = $this->validateFullName($user->name);
-        if (!$name) {
-            return ['Nome incompleto'];
-        }
+        $this->checkOfExists($user->register, $user->email);
+        $this->validateFullName($user->name);
 
         return $this->userRepository->addUser(
             new User($user->toArray())
         );
     }
 
-    private function validateFullName(string $name): bool
+    /**
+     * @throws Exception
+     */
+    private function validateFullName(string $name): void
     {
         //TODO: TROCAR ISSO DEPOIS DE TRATAR OS ERROS
-        return str_word_count($name) > 1;
+        if (!(str_word_count($name) > 1)) {
+            throw new Exception();
+        }
     }
 
-    private function checkOfExists(string $register, string $email): bool
+    /**
+     * @throws Exception
+     */
+    private function checkOfExists(string $register, string $email): void
     {
         $user = $this->userRepository->findUserByRegisterAndEmail($register, $email);
 
         if ($user) {
             //TODO: TROCAR ISSO DEPOIS DE TRATAR OS ERROS
-            return true;
+            throw new Exception();
         }
-        return false;
     }
 
-    private function checkOfExistsById(int $id): User|null
+    public function debit(User $payer, float $value)
     {
-        $user = $this->userRepository->findUser($id);
-
-        if (!$user) {
-            //TODO: TROCAR ISSO DEPOIS DE TRATAR OS ERROS
-            return null;
+        $algumacoisa = true;
+        if ($algumacoisa != true) {
+            throw new \DomainException('hj n');
         }
-        return $user;
     }
 
-    public function checkBalance(int $id): float
+    public function credit(User $payee, float $value)
     {
-        $userExists = $this->checkOfExistsById($id);
-        return $userExists->balance;
+    }
+
+    public function find(int $id): User
+    {
+        return $this->userRepository->findUser($id) ?? throw new \DomainException('Usuário nãp encontrado');
     }
 
 
-    public function updateBalance(int $id, float $value): bool
+    /**
+     * @throws Exception
+     */
+    private function updateBalance(int $id, float $value): bool
     {
-        $balance = $this->checkBalance($id);
+        $user = $this->find($id);
+        $balance = $user->balance;
         $newBalance = $balance + $value;
         return $this->userRepository->updateBalance($id, $newBalance);
     }

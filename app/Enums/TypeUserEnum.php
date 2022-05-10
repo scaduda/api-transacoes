@@ -1,18 +1,17 @@
 <?php
 
 namespace App\Enums;
-use App\Enums\EnumInterface;
 
 enum TypeUserEnum: int implements EnumInterface
 {
-    case PessoaFisica = 1;
-    case PessoaJuridica = 2;
+    case Person = 1;
+    case LegalPerson = 2;
 
     public function nome(): string
     {
         return match ($this) {
-            self::PessoaFisica => 'Pessoa Física',
-            self::PessoaJuridica => 'Pessoa Jurídica'
+            self::Person => 'Person',
+            self::LegalPerson => 'Legal Person'
         };
     }
 }

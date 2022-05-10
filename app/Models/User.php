@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property float $balance
+ * @property TypeUserEnum $type
  */
 
 class User extends Model
@@ -36,7 +37,6 @@ class User extends Model
         'email',
         'password',
         'balance',
-        'saldo',
     ];
 
     protected $casts = [

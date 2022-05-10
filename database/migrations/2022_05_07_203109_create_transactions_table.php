@@ -15,13 +15,11 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->integer('type');
             $table->bigInteger('payer_id');
             $table->bigInteger('payee_id');
             $table->foreign('payer_id')->references('id')->on('users')->onUpdate('RESTRICT')->onDelete('RESTRICT');
             $table->foreign('payee_id')->references('id')->on('users')->onUpdate('RESTRICT')->onDelete('RESTRICT');
             $table->float('value');
-            $table->string('comment')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

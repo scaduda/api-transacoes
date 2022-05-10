@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Repositories\Database\TransactionRepository;
 use App\Repositories\Database\UserRepository;
-use App\Repositories\Interfaces\IUserRepository;
+use App\Repositories\Interfaces\TransactionRepositoryInterface;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -16,8 +18,12 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(
-            IUserRepository::class,
+            UserRepositoryInterface::class,
             UserRepository::class
+        );
+        $this->app->bind(
+            TransactionRepositoryInterface::class,
+            TransactionRepository::class
         );
     }
 
