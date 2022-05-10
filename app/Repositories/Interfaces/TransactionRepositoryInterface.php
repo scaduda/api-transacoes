@@ -3,14 +3,14 @@
 namespace App\Repositories\Interfaces;
 
 use App\Entities\Transaction;
-use App\Utils\Exceptions\TransactionException;
+use App\Utils\Exceptions\NotificationException;
 
 interface TransactionRepositoryInterface
 {
     /**
      * @param Transaction $transaction
      * @return bool
-     * @throws TransactionException
+     * @throws NotificationException
      */
     public function addTransaction(Transaction $transaction): bool;
 

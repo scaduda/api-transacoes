@@ -6,7 +6,6 @@ use App\DTO\TransactionDTO;
 use App\Entities\Transaction;
 use App\Entities\User;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
-use App\Utils\Exceptions\TransactionException;
 use Exception;
 
 class TransactionService
@@ -15,7 +14,8 @@ class TransactionService
 
     public function __construct(
         private TransactionRepositoryInterface $transactionRepository,
-        private UserService                    $userService
+        private UserService                    $userService,
+        private NotificationService $notificationService
     )
     {
     }
@@ -41,7 +41,7 @@ class TransactionService
             $this->debit();
             $this->addTransaction();
             $this->credit();
-            $this->notify($payee);
+            $this->notify($this->transaction);
             $this->transactionRepository->commitTransaction();
             return true;
         } catch (Exception) {
@@ -58,9 +58,9 @@ class TransactionService
         }
     }
 
-    private function notify()
+    private function notify(Transaction $transaction): void
     {
-
+        $this->notificationService->notify($transaction);
     }
 
     private function validatePayer(User $payer, TransactionDTO $transaction): void
@@ -72,7 +72,6 @@ class TransactionService
         if (!$payer->checkBalance($transaction->value)) {
             throw new \DomainException('Saldo insuficiente');
         }
-
     }
 
     private function validateTransaction(Transaction $transactionEntity)

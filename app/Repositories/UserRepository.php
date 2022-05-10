@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Database;
+namespace App\Repositories;
 
 use App\Entities\User;
 use \App\Models\User as UserModel;

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Repositories\Database;
+namespace App\Repositories;
 
 use App\Entities\Transaction;
 use App\Models\Transaction as TransactionModel;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
-use App\Utils\Exceptions\TransactionException;
+use App\Utils\Exceptions\NotificationException;
 use Illuminate\Support\Facades\DB;
 
 class TransactionRepository implements TransactionRepositoryInterface
@@ -20,7 +20,7 @@ class TransactionRepository implements TransactionRepositoryInterface
     /**
      * @param Transaction $transaction
      * @return bool
-     * @throws TransactionException
+     * @throws NotificationException
      */
     public function addTransaction(Transaction $transaction): bool
     {
@@ -31,7 +31,7 @@ class TransactionRepository implements TransactionRepositoryInterface
             $transactionModel->value = $transaction->value;
             return $transactionModel->save();
         } catch (\Exception) {
-            throw new TransactionException();
+            throw new NotificationException();
         }
     }
 

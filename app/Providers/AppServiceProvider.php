@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
-use App\Repositories\Database\TransactionRepository;
-use App\Repositories\Database\UserRepository;
+use App\Repositories\Interfaces\NotificationRepositoryInterface;
+use App\Repositories\NotificationRepository;
+use App\Repositories\TransactionRepository;
+use App\Repositories\UserRepository;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
@@ -24,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             TransactionRepositoryInterface::class,
             TransactionRepository::class
+        );
+        $this->app->bind(
+            NotificationRepositoryInterface::class,
+            NotificationRepository::class
         );
     }
 
