@@ -69,7 +69,7 @@ class UserService
         return $this->updateBalance($payee);
     }
 
-    public function find(int $id): User
+    public function find(int $id): ?User
     {
         return $this->userRepository->findUser($id) ?? throw new \DomainException('Usuário não encontrado');
     }

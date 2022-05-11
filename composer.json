@@ -10,11 +10,11 @@
         "laravel/framework": "^9.11",
         "laravel/sanctum": "^2.14.1",
         "laravel/tinker": "^2.7",
-        "predis/predis": "^1.1",
-        "ext-http": "*"
+        "predis/predis": "^1.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
+        "knuckleswtf/scribe": "^3.27",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^6.1",

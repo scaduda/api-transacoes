@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Entities\User;
 use \App\Models\User as UserModel;
 use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Utils\Exceptions\UserException;
 use App\ValuesObjects\Email;
 use App\ValuesObjects\Name;
 use App\ValuesObjects\Register;
@@ -26,10 +27,15 @@ class UserRepository implements UserRepositoryInterface
         return $userModel->save();
     }
 
-    public function findUser(int $id): User
+    public function findUser(int $id): ?User
     {
-        $userBanco = UserModel::find($id);
-        return $this->returnEntity($userBanco);
+        try {
+            $userBanco = UserModel::findOrFail($id);
+            return $this->returnEntity($userBanco);
+        } catch (\Exception) {
+            throw new UserException('Usuário não encontrado');
+        }
+
     }
 
     private function returnEntity(UserModel $user): ?User
