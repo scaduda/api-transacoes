@@ -20,7 +20,7 @@ class UserRepository implements UserRepositoryInterface
                 "register" => new Register($user->register),
                 "email" => new Email($user->email),
                 "password" => $user->password,
-                "balance" => $user->balance,
+                "balance" => $user->getBalance(),
                 "fantasy_name" => $user->fantasy_name,
         ]);
         return $userModel->save();
@@ -61,7 +61,7 @@ class UserRepository implements UserRepositoryInterface
     public function updateBalance(int $id, float $value): bool
     {
         $user = UserModel::find($id);
-        return $user->update(['balance' => $value]);
+        return (bool) $user->update(['balance' => $value]);
     }
 
     public function findId(string $register): int
