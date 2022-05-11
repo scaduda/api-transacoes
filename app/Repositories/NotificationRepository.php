@@ -3,18 +3,24 @@
 namespace App\Repositories;
 
 
+use App\Adapters\HttpClientInterface;
 use App\Events\TransactionNotification;
 use App\Models\Notification;
 use App\Repositories\Interfaces\NotificationRepositoryInterface;
 use App\Utils\Exceptions\NotificationException;
 use Exception;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class NotificationRepository implements NotificationRepositoryInterface
 {
     const URL = 'http://o4d9z.mocklab.io/notify';
     const STATUS = 'Success';
+
+    public function __construct(
+        private HttpClientInterface $client
+    )
+    {
+    }
 
     public function send(string $email, string $title, string $message): void
     {
@@ -43,9 +49,10 @@ class NotificationRepository implements NotificationRepositoryInterface
     private function sendNotification(): bool
     {
         try {
-            $response = Http::get(self::URL);
-            return $response->ok() && $response['message'] === self::STATUS;
-        } catch (\Exception) {
+            $response = $this->client->get(self::URL);
+            $body = json_decode((string)$response->getBody());
+            return $response->getStatusCode() === 200 && $body->message === self::STATUS;
+        } catch (Exception) {
             return false;
         }
     }

@@ -20,18 +20,14 @@ class Transaction extends Model
     protected $table = 'transactions';
     protected $visible = [
         'id',
-        'type',
         'payer_id',
         'payee_id',
         'value',
-        'comment',
         'created_at',
     ];
     protected $fillable = [
-        'type',
         'payer_id',
         'payee_id',
         'value',
-        'comment',
     ];
 }
