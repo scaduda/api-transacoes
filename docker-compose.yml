@@ -13,8 +13,10 @@ services:
 
   api-transacoes_dev:
     working_dir: /app
-    image: webdevops/php-apache-dev:8.1
+    image: webdevops/php-apache:8.1
     container_name: api-transacoes
+    build:
+      context: .
     ports:
       - "8080:80"
     volumes:
@@ -26,6 +28,7 @@ services:
     environment:
       ANBIENT: 2
       PHP_DATE_TIMEZONE: America/Maceio
+      XDEBUG_MODE: coverage
 
   redis:
     image: redis:7.0.0-alpine
