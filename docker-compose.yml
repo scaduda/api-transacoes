@@ -41,6 +41,7 @@ services:
         environment:
             ANBIENT: 2
             PHP_DATE_TIMEZONE: America/Maceio
+            XDEBUG_MODE: coverage
 
     redis:
         image: redis:7.0.0-alpine

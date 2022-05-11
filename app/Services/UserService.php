@@ -8,6 +8,7 @@ use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\ValuesObjects\Email;
 use App\ValuesObjects\Name;
 use App\ValuesObjects\Register;
+use DomainException;
 use Exception;
 
 class UserService
@@ -51,35 +52,37 @@ class UserService
     }
 
     /**
-     * @throws Exception
+     * @throws DomainException
      */
     public function debit(User $payer, float $value): bool
     {
-        $newBalance = $payer->balance - $value;
-        return $this->updateBalance($payer, $newBalance);
+        $payer->updateBalance($payer->getBalance() - $value);
+        return $this->updateBalance($payer);
     }
 
     /**
-     * @throws Exception
+     * @throws DomainException
      */
     public function credit(User $payee, float $value): bool
     {
-        $newBalance = $payee->balance + $value;
-        return $this->updateBalance($payee, $newBalance);
+        $payee->updateBalance($payee->getBalance() + $value);
+        return $this->updateBalance($payee);
     }
 
     public function find(int $id): User
     {
-        return $this->userRepository->findUser($id) ?? throw new \DomainException('Usuário nãp encontrado');
+        return $this->userRepository->findUser($id) ?? throw new \DomainException('Usuário não encontrado');
     }
 
 
-    /**
-     * @throws Exception
-     */
-    private function updateBalance(User $user, float $value): bool
+
+    private function updateBalance(User $user): bool
     {
-        $user_id =$this->userRepository->findId($user->register);
-        return $this->userRepository->updateBalance($user_id , $value);
+        $user_id = $this->userRepository->findId($user->register);
+        $update  = $this->userRepository->updateBalance($user_id , $user->getBalance());
+        if(false === $update){
+            throw new \DomainException('Falha ao atualizar o banco');
+        }
+        return $this->userRepository->updateBalance($user_id , $user->getBalance());
     }
 }

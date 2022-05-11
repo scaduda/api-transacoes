@@ -8,7 +8,6 @@ use App\Entities\User;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
 use App\Utils\Exceptions\AuthorizationException;
 use Exception;
-use Illuminate\Support\Facades\Http;
 
 class TransactionService
 {
@@ -17,8 +16,8 @@ class TransactionService
     public function __construct(
         private TransactionRepositoryInterface $transactionRepository,
         private UserService                    $userService,
-        private NotificationService $notificationService,
-        private AuthorizationService $autorizationService
+        private NotificationService            $notificationService,
+        private AuthorizationService           $autorizationService
     )
     {
     }
@@ -55,7 +54,7 @@ class TransactionService
 
     private function authorize(): void
     {
-        if ($this->autorizationService->authorize($this->transaction)) {
+        if (!$this->autorizationService->authorize($this->transaction)) {
             throw new AuthorizationException('Transação não autorizada');
         }
 
@@ -87,6 +86,7 @@ class TransactionService
             throw new \DomainException('Insira um valor válido');
         }
     }
+
 
     private function debit()
     {

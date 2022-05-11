@@ -15,10 +15,20 @@ class User
         public readonly Register $register,
         public readonly Email $email,
         public readonly string $password,
-        public readonly float $balance,
+        private float $balance,
         public readonly ?string $fantasy_name,
     )
     {
+    }
+
+    public function getBalance(): float
+    {
+        return $this->balance;
+    }
+
+    public function updateBalance($newBalance)
+    {
+        $this->balance = $newBalance;
     }
 
     public function isPayer(): bool

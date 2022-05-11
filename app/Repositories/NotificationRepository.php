@@ -35,7 +35,7 @@ class NotificationRepository implements NotificationRepositoryInterface
 
         try {
             event(new TransactionNotification($transaction));
-        } catch (Exception $e) {
+        } catch (NotificationException $e) {
             Log::error($e->getMessage(), $e->getTrace());
         }
     }
