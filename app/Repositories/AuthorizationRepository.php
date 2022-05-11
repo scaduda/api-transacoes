@@ -5,7 +5,8 @@ namespace App\Repositories;
 use App\Adapters\HttpClientInterface;
 use App\Entities\Transaction;
 use App\Repositories\Interfaces\AuthorizationRepositoryInterface;
-use Illuminate\Support\Facades\Http;
+use App\Utils\Exceptions\AuthorizationException;
+use Exception;
 
 
 class AuthorizationRepository implements AuthorizationRepositoryInterface
@@ -20,15 +21,19 @@ class AuthorizationRepository implements AuthorizationRepositoryInterface
     }
     public function authorize(Transaction $transaction): bool
     {
-        $response = $this->client->get(self::URL);
-        if ($response->getStatusCode() !== 200) {
-            return false;
+        try {
+            $response = $this->client->get(self::URL);
+            if ($response->getStatusCode() !== 200) {
+                return false;
+            }
+            $body = json_decode((string)$response->getBody());
+            if ($body->message !== self::AUTORIZADO) {
+                return false;
+            }
+            return true;
+        } catch (Exception) {
+            throw new AuthorizationException('Autorização indisponível');
         }
-        $body = json_decode((string)$response->getBody());
-        if ($body->message !== self::AUTORIZADO) {
-            return false;
-        }
-        return true;
     }
 
 

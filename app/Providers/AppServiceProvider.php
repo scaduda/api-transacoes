@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Adapters\HttpClient;
+use App\Adapters\HttpClientInterface;
 use App\Repositories\AuthorizationRepository;
 use App\Repositories\Interfaces\AuthorizationRepositoryInterface;
 use App\Repositories\Interfaces\NotificationRepositoryInterface;
@@ -36,6 +38,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             AuthorizationRepositoryInterface::class,
             AuthorizationRepository::class
+        );
+        $this->app->bind(
+            HttpClientInterface::class,
+            HttpClient::class
         );
     }
 

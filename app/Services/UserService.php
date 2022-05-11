@@ -42,12 +42,12 @@ class UserService
     /**
      * @throws Exception
      */
-    private function checkOfExists(string $register, string $email): void
+    public function checkOfExists(string $register, string $email): void
     {
         $user = $this->userRepository->findUserByRegisterAndEmail($register, $email);
 
         if ($user) {
-            throw new \DomainException('Usuário já cadastrado');
+            throw new DomainException('Usuário já cadastrado');
         }
     }
 
@@ -76,12 +76,12 @@ class UserService
 
 
 
-    private function updateBalance(User $user): bool
+    public function updateBalance(User $user): bool
     {
         $user_id = $this->userRepository->findId($user->register);
         $update  = $this->userRepository->updateBalance($user_id , $user->getBalance());
         if(false === $update){
-            throw new \DomainException('Falha ao atualizar o banco');
+            throw new DomainException('Falha ao atualizar o banco');
         }
         return $this->userRepository->updateBalance($user_id , $user->getBalance());
     }

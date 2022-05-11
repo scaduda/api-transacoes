@@ -22,7 +22,7 @@ class SendTransactionNotification implements ShouldQueue
     /**
      * Handle the event.
      *
-     * @param  \App\Events\TransactionNotification  $event
+     * @param TransactionNotification $event
      * @return void
      */
     public function handle(TransactionNotification $event)

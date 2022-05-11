@@ -7,6 +7,9 @@ use App\Entities\Transaction;
 use App\Entities\User;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
 use App\Utils\Exceptions\AuthorizationException;
+use App\Utils\Exceptions\NotificationException;
+use App\Utils\Exceptions\TransactionException;
+use DomainException;
 use Exception;
 
 class TransactionService
@@ -60,6 +63,9 @@ class TransactionService
 
     }
 
+    /**
+     * @throws NotificationException
+     */
     private function notify(Transaction $transaction): void
     {
         $this->notificationService->notify($transaction);
@@ -68,40 +74,45 @@ class TransactionService
     private function validatePayer(User $payer, TransactionDTO $transaction): void
     {
         if (!$payer->isPayer()) {
-            throw new \DomainException('Só Pessoas Físicas podem realizar transferências');
+            throw new DomainException('Só Pessoas Físicas podem realizar transferências');
         }
 
         if (!$payer->checkBalance($transaction->value)) {
-            throw new \DomainException('Saldo insuficiente');
+            throw new DomainException('Saldo insuficiente');
         }
     }
 
     private function validateTransaction(Transaction $transactionEntity)
     {
         if ($transactionEntity->areEqual()) {
-            throw new \DomainException('Pagador e receptor não podem ser iguais');
+            throw new DomainException('Pagador e receptor não podem ser iguais');
         }
 
         if (!$transactionEntity->valueIsNotZero()) {
-            throw new \DomainException('Insira um valor válido');
+            throw new DomainException('Insira um valor válido');
         }
     }
 
-
-    private function debit()
+    /**
+     * @throws DomainException
+     */
+    private function debit(): void
     {
         $this->userService->debit($this->transaction->payer, $this->transaction->value);
     }
 
-    private function addTransaction()
+    /**
+     * @throws TransactionException
+     */
+    private function addTransaction(): void
     {
         $this->transactionRepository->addTransaction($this->transaction);
     }
 
     /**
-     * @throws Exception
+     * @throws DomainException
      */
-    private function credit()
+    private function credit(): void
     {
         $this->userService->credit($this->transaction->payee, $this->transaction->value);
     }

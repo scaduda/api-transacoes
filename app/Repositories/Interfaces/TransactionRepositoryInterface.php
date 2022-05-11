@@ -12,7 +12,7 @@ interface TransactionRepositoryInterface
      * @return bool
      * @throws NotificationException
      */
-    public function addTransaction(Transaction $transaction): bool;
+    public function addTransaction(Transaction $transaction): void;
 
     public function beginTransaction(): void;
 
