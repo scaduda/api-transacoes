@@ -7,6 +7,7 @@ use App\Models\Transaction as TransactionModel;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Utils\Exceptions\NotificationException;
+use App\Utils\Exceptions\TransactionException;
 use Illuminate\Support\Facades\DB;
 
 class TransactionRepository implements TransactionRepositoryInterface
@@ -20,7 +21,7 @@ class TransactionRepository implements TransactionRepositoryInterface
     /**
      * @param Transaction $transaction
      * @return bool
-     * @throws NotificationException
+     * @throws TransactionException
      */
     public function addTransaction(Transaction $transaction): bool
     {
@@ -31,7 +32,7 @@ class TransactionRepository implements TransactionRepositoryInterface
             $transactionModel->value = $transaction->value;
             return $transactionModel->save();
         } catch (\Exception) {
-            throw new NotificationException();
+            throw new TransactionException('Erro ao realizar transação');
         }
     }
 

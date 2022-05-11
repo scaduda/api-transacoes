@@ -27,21 +27,6 @@ services:
         environment:
             ANBIENT: 2
             PHP_DATE_TIMEZONE: America/Maceio
-    api-transacoes_worker:
-        working_dir: /app
-        image: webdevops/php-apache-dev:8.1
-        container_name: worker-transacoes
-        build:
-            context: .
-        volumes:
-            - ".:/app"
-        restart: always
-        entrypoint:
-            -   "php /app/artisan queue:work"
-        environment:
-            ANBIENT: 2
-            PHP_DATE_TIMEZONE: America/Maceio
-            XDEBUG_MODE: coverage
 
     redis:
         image: redis:7.0.0-alpine
