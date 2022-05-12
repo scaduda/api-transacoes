@@ -17,10 +17,9 @@ Exemplo de api RESTFul de transferência financeira tolerante a falhas, que cons
 O projeto estará rodando em http://localhost:8080
 
 ### Documentação:
-
+- Execute o comando ```make generate-scribe``` para gerar a documentação Scribe. Após execução acessar http://localhost:8080/docs 
 - POST: Criação de Usuário Comum e Lojista
 - POST: Criação de Transação
 
-- Execute o comando ```make generate-scribe``` para gerar a documentação Scribe
 
 

@@ -8,7 +8,7 @@ use App\Services\TransactionService;
 use Illuminate\Http\Response;
 
 /**
- * @group Transações
+ * @group Transactions
  */
 
 class TransactionController extends Controller

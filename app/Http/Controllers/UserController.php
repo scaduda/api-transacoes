@@ -8,6 +8,10 @@ use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
+/**
+ * @group Users
+ */
+
 class UserController extends Controller
 {
 
