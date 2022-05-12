@@ -52,7 +52,7 @@ class Handler extends ExceptionHandler
             if ($request->is('api/*')) {
                 return response()->json([
                     'message' => $e->getMessage()
-                ], 404);
+                ], 400);
             }
         });
     }
