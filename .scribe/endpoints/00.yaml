@@ -1,0 +1,41 @@
+name: Transactions
+description: ''
+endpoints:
+  -
+    httpMethods:
+      - POST
+    uri: api/v1/transactions
+    metadata:
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    queryParameters: []
+    bodyParameters:
+      payer:
+        name: payer
+        description: ''
+        required: true
+        example: 7209235.8555215
+        type: number
+        custom: []
+      payee:
+        name: payee
+        description: ''
+        required: true
+        example: 691.2127692
+        type: number
+        custom: []
+      value:
+        name: value
+        description: ''
+        required: true
+        example: 4078332.2521685
+        type: number
+        custom: []
+    responses: []
+    responseFields: []
